@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { OvertimeEntryForm } from '@/components/overtime-entry-form';
 import { OvertimeEntriesList } from '@/components/overtime-entries-list';
 import { OvertimeSummary } from '@/components/overtime-summary';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
@@ -9,11 +10,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 py-8">
       <div className="container mx-auto max-w-7xl px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight">Overtime Calculator</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 mt-2">
-            Track your overtime hours and calculate your pay
-          </p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight">Overtime Calculator</h1>
+            <p className="text-zinc-600 dark:text-zinc-400 mt-2">
+              Track your overtime hours and calculate your pay
+            </p>
+          </div>
+          <ThemeSwitcher />
         </div>
 
         {/* Summary Section */}
