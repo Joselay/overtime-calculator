@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock, type Icon } from "lucide-react"
+import { Clock, type LucideIcon } from "lucide-react"
 
 import {
   SidebarGroup,
@@ -16,7 +16,7 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon?: Icon
+    icon?: LucideIcon
   }[]
 }) {
   return (
