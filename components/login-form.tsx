@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -66,7 +67,14 @@ export function LoginForm({
               </Field>
               <Field>
                 <Button type="submit" className="w-full" disabled={isPending}>
-                  {isPending ? "Logging in..." : "Login"}
+                  {isPending ? (
+                    <>
+                      <Loader2 className="animate-spin" />
+                      Login
+                    </>
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </Field>
             </FieldGroup>
