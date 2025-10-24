@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,6 +25,12 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [state, formAction, isPending] = useActionState(login, null);
 
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(state.error);
+    }
+  }, [state?.error, state?.timestamp]);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -36,11 +43,6 @@ export function LoginForm({
         <CardContent>
           <form action={formAction}>
             <FieldGroup>
-              {state?.error && (
-                <div className="rounded-md bg-red-50 dark:bg-red-950 p-3 text-sm text-red-800 dark:text-red-200">
-                  {state.error}
-                </div>
-              )}
               <Field>
                 <FieldLabel htmlFor="username">Username</FieldLabel>
                 <Input
