@@ -7,10 +7,22 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { getCurrentUser } from "@/lib/auth"
 
 import data from "./data.json"
 
-export default function Page() {
+export default async function Page() {
+  const currentUser = await getCurrentUser()
+
+  // Transform user data to match AppSidebar expectations
+  const user = currentUser
+    ? {
+        name: currentUser.username,
+        email: currentUser.email || currentUser.username,
+        avatar: currentUser.avatar || "/avatars/default.jpg",
+      }
+    : null
+
   return (
     <SidebarProvider
       style={
@@ -20,7 +32,7 @@ export default function Page() {
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      <AppSidebar variant="inset" user={user} />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">
