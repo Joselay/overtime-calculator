@@ -1,5 +1,12 @@
 import { pgTable, serial, text, real, timestamp, date } from 'drizzle-orm/pg-core';
 
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  username: text('username').notNull().unique(),
+  password: text('password').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 export const overtimeEntries = pgTable('overtime_entries', {
   id: serial('id').primaryKey(),
   date: date('date').notNull(),
@@ -11,5 +18,7 @@ export const overtimeEntries = pgTable('overtime_entries', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 export type OvertimeEntry = typeof overtimeEntries.$inferSelect;
 export type NewOvertimeEntry = typeof overtimeEntries.$inferInsert;
