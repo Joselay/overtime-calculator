@@ -65,3 +65,36 @@ export async function getOvertimeStats(): Promise<OvertimeStats> {
     previousMonthTotalHours: Number(previousMonthData?.totalHours) || 0,
   };
 }
+
+export interface OvertimeChartData {
+  date: string;
+  hours: number;
+  pay: number;
+}
+
+export async function getOvertimeChartData(): Promise<OvertimeChartData[]> {
+  // Get data for the last 90 days
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - 90);
+
+  const results = await db
+    .select({
+      date: overtimeEntries.date,
+      hours: sql<number>`COALESCE(SUM(${overtimeEntries.calculatedHours}), 0)`,
+      pay: sql<number>`COALESCE(SUM(${overtimeEntries.overtimePay}), 0)`,
+    })
+    .from(overtimeEntries)
+    .where(
+      sql`${overtimeEntries.date} >= ${startDate.toISOString().split('T')[0]}
+          AND ${overtimeEntries.date} <= ${endDate.toISOString().split('T')[0]}`
+    )
+    .groupBy(overtimeEntries.date)
+    .orderBy(overtimeEntries.date);
+
+  return results.map((row) => ({
+    date: row.date,
+    hours: Number(row.hours) || 0,
+    pay: Number(row.pay) || 0,
+  }));
+}

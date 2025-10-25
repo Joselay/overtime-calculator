@@ -8,13 +8,14 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import { getCurrentUser } from "@/lib/auth"
-import { getOvertimeStats } from "@/lib/db/queries"
+import { getOvertimeStats, getOvertimeChartData } from "@/lib/db/queries"
 
 import data from "./data.json"
 
 export default async function Page() {
   const currentUser = await getCurrentUser()
   const overtimeStats = await getOvertimeStats()
+  const chartData = await getOvertimeChartData()
 
   // Transform user data to match AppSidebar expectations
   const user = currentUser
@@ -42,7 +43,7 @@ export default async function Page() {
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <SectionCards stats={overtimeStats} />
               <div className="px-4 lg:px-6">
-                <ChartAreaInteractive />
+                <ChartAreaInteractive data={chartData} />
               </div>
               <DataTable data={data} />
             </div>
