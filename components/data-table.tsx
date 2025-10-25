@@ -102,14 +102,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       return (
         <div className="font-medium">
           {date.toLocaleDateString("en-US", {
+            weekday: "short",
             month: "short",
             day: "numeric",
-            year: "numeric",
           })}
         </div>
       );
     },
-    size: 120,
+    size: 140,
     enableHiding: false,
   },
   {

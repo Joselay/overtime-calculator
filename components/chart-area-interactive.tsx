@@ -177,7 +177,8 @@ export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
                 <ChartTooltipContent
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
+                      weekday: "long",
+                      month: "long",
                       day: "numeric",
                     })
                   }}

@@ -49,7 +49,7 @@ export async function OvertimeEntriesList() {
           <TableBody>
             {entries.map((entry) => (
               <TableRow key={entry.id}>
-                <TableCell>{format(new Date(entry.date), 'MMM dd, yyyy')}</TableCell>
+                <TableCell>{format(new Date(entry.date), 'EEE, MMM dd')}</TableCell>
                 <TableCell>{entry.startTime}</TableCell>
                 <TableCell>{entry.endTime}</TableCell>
                 <TableCell>{entry.calculatedHours.toFixed(2)}h</TableCell>
