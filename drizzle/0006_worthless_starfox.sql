@@ -1,1 +1,0 @@
-ALTER TABLE "overtime_entries" ADD COLUMN "is_public_holiday" boolean DEFAULT false NOT NULL;

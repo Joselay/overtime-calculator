@@ -5,50 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1761315836837,
-      "tag": "0000_daffy_albert_cleary",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1761320619866,
-      "tag": "0001_warm_captain_midlands",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1761324404998,
-      "tag": "0002_stiff_hellfire_club",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1761356242031,
-      "tag": "0003_gifted_freak",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1761356378711,
-      "tag": "0004_jazzy_dark_phoenix",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1761356591189,
-      "tag": "0005_lonely_venus",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1761383430009,
-      "tag": "0006_worthless_starfox",
+      "when": 1761385438917,
+      "tag": "0000_first_wild_pack",
       "breakpoints": true
     }
   ]
