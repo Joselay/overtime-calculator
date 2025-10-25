@@ -43,7 +43,7 @@ export function AddOvertimeDialog() {
     }
 
     if (!startTime || !endTime) {
-      toast.error('Please enter start and end times in 24-hour format (HH:mm)');
+      toast.error('Please enter start and end times (e.g., 9:00 AM)');
       return;
     }
 
@@ -135,7 +135,7 @@ export function AddOvertimeDialog() {
 
           {/* Start Time */}
           <div className="space-y-2">
-            <Label htmlFor="startTime">Start Time (24-hour format)</Label>
+            <Label htmlFor="startTime">Start Time</Label>
             <TimeInput
               id="startTime"
               name="startTime"
@@ -148,7 +148,7 @@ export function AddOvertimeDialog() {
 
           {/* End Time */}
           <div className="space-y-2">
-            <Label htmlFor="endTime">End Time (24-hour format)</Label>
+            <Label htmlFor="endTime">End Time</Label>
             <TimeInput
               id="endTime"
               name="endTime"

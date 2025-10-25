@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import { DeleteEntryButton } from './delete-entry-button';
 import { format } from 'date-fns';
+import { format24to12 } from '@/lib/time-format';
 
 export async function OvertimeEntriesList() {
   const entries = await getOvertimeEntries();
@@ -53,8 +54,8 @@ export async function OvertimeEntriesList() {
                 <TableCell>{format(new Date(entry.date), 'EEE, MMM dd')}</TableCell>
                 <TableCell>{entry.task}</TableCell>
                 <TableCell>{entry.project}</TableCell>
-                <TableCell className="font-mono">{entry.startTime}</TableCell>
-                <TableCell className="font-mono">{entry.endTime}</TableCell>
+                <TableCell className="font-mono">{format24to12(entry.startTime)}</TableCell>
+                <TableCell className="font-mono">{format24to12(entry.endTime)}</TableCell>
                 <TableCell>{entry.calculatedHours.toFixed(2)}h</TableCell>
                 <TableCell className="font-semibold">
                   ${entry.overtimePay.toFixed(2)}

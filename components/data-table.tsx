@@ -14,6 +14,7 @@ import { AddOvertimeDialog } from "@/components/add-overtime-dialog";
 import { EditOvertimeDialog } from "@/components/edit-overtime-dialog";
 import { deleteOvertimeEntry } from "@/lib/actions";
 import { toast } from "sonner";
+import { format24to12 } from "@/lib/time-format";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -135,7 +136,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "startTime",
     header: "Start Time",
     cell: ({ row }) => (
-      <div className="text-muted-foreground font-mono">{row.original.startTime}</div>
+      <div className="text-muted-foreground font-mono">{format24to12(row.original.startTime)}</div>
     ),
     size: 100,
   },
@@ -143,7 +144,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "endTime",
     header: "End Time",
     cell: ({ row }) => (
-      <div className="text-muted-foreground font-mono">{row.original.endTime}</div>
+      <div className="text-muted-foreground font-mono">{format24to12(row.original.endTime)}</div>
     ),
     size: 100,
   },
