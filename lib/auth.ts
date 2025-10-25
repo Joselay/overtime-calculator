@@ -43,6 +43,7 @@ export async function getCurrentUser() {
       username: users.username,
       email: users.email,
       avatar: users.avatar,
+      baseSalary: users.baseSalary,
     })
     .from(users)
     .where(eq(users.id, session.userId))

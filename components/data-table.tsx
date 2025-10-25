@@ -11,6 +11,9 @@ import {
   IconLayoutColumns,
 } from "@tabler/icons-react";
 import { AddOvertimeDialog } from "@/components/add-overtime-dialog";
+import { EditOvertimeDialog } from "@/components/edit-overtime-dialog";
+import { deleteOvertimeEntry } from "@/lib/actions";
+import { toast } from "sonner";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -132,7 +135,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "startTime",
     header: "Start Time",
     cell: ({ row }) => (
-      <div className="text-muted-foreground">{row.original.startTime}</div>
+      <div className="text-muted-foreground font-mono">{row.original.startTime}</div>
     ),
     size: 100,
   },
@@ -140,7 +143,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "endTime",
     header: "End Time",
     cell: ({ row }) => (
-      <div className="text-muted-foreground">{row.original.endTime}</div>
+      <div className="text-muted-foreground font-mono">{row.original.endTime}</div>
     ),
     size: 100,
   },
@@ -165,27 +168,54 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "actions",
     header: () => <div className="text-right"></div>,
-    cell: ({ row }) => (
-      <div className="flex justify-end pl-8">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-              size="icon"
-            >
-              <IconDotsVertical />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const [isPending, startTransition] = React.useTransition();
+
+      const handleDelete = () => {
+        if (!confirm('Are you sure you want to delete this entry?')) {
+          return;
+        }
+
+        startTransition(async () => {
+          const result = await deleteOvertimeEntry(row.original.id);
+          if (result.success) {
+            toast.success('Entry deleted successfully');
+          }
+        });
+      };
+
+      return (
+        <div className="flex justify-end pl-8">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                size="icon"
+                disabled={isPending}
+              >
+                <IconDotsVertical />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              <DropdownMenuItem
+                onSelect={() => {
+                  // Access setEditingEntry from table meta
+                  (table.options.meta as any)?.setEditingEntry(row.original);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onSelect={handleDelete} disabled={isPending}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
     size: 50,
     enableHiding: false,
   },
@@ -203,6 +233,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [editingEntry, setEditingEntry] = React.useState<z.infer<typeof schema> | null>(null);
 
   const table = useReactTable({
     data,
@@ -227,10 +258,23 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    meta: {
+      setEditingEntry,
+    },
   });
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <>
+      {editingEntry && (
+        <EditOvertimeDialog
+          entry={editingEntry}
+          open={!!editingEntry}
+          onOpenChange={(open) => {
+            if (!open) setEditingEntry(null);
+          }}
+        />
+      )}
+      <div className="flex w-full flex-col gap-4">
       <div className="flex items-center justify-between px-4 lg:px-6">
         <h2 className="text-lg font-semibold">Overtime Entries</h2>
         <div className="flex items-center gap-2">
@@ -417,5 +461,6 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
         </div>
       </div>
     </div>
+    </>
   );
 }

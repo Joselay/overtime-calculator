@@ -1,31 +1,53 @@
-'use client';
+"use client";
 
-import { useState, useTransition, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { TimeInput } from '@/components/ui/time-input';
-import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useState, useTransition, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { TimeInput } from "@/components/ui/time-input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { addOvertimeEntry } from '@/lib/actions';
-import { calculateDuration } from '@/lib/overtime-calculations';
-import { format } from 'date-fns';
-import { CalendarIcon, PlusIcon, Clock } from 'lucide-react';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import { updateOvertimeEntry } from "@/lib/actions";
+import { calculateDuration } from "@/lib/overtime-calculations";
+import { format, parse } from "date-fns";
+import { CalendarIcon, Clock } from "lucide-react";
+import { toast } from "sonner";
 
-export function AddOvertimeDialog() {
-  const [open, setOpen] = useState(false);
+interface EditOvertimeDialogProps {
+  entry: {
+    id: number;
+    date: string;
+    startTime: string;
+    endTime: string;
+    calculatedHours: number;
+    overtimePay: number;
+    task: string;
+    project: string;
+    createdAt?: Date;
+  };
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function EditOvertimeDialog({
+  entry,
+  open,
+  onOpenChange,
+}: EditOvertimeDialogProps) {
   const [date, setDate] = useState<Date>();
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -34,51 +56,49 @@ export function AddOvertimeDialog() {
     ? calculateDuration(startTime, endTime)
     : 0;
 
+  // Initialize form with entry data when dialog opens
+  useEffect(() => {
+    if (open && entry) {
+      setDate(parse(entry.date, "yyyy-MM-dd", new Date()));
+      setStartTime(entry.startTime);
+      setEndTime(entry.endTime);
+    }
+  }, [open, entry]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!date) {
-      toast.error('Please select a date');
+      toast.error("Please select a date");
       return;
     }
 
     if (!startTime || !endTime) {
-      toast.error('Please enter start and end times in 24-hour format (HH:mm)');
+      toast.error("Please enter start and end times in 24-hour format (HH:mm)");
       return;
     }
 
     const formData = new FormData(e.currentTarget);
-    formData.set('date', format(date, 'yyyy-MM-dd'));
-    formData.set('startTime', startTime);
-    formData.set('endTime', endTime);
+    formData.set("date", format(date, "yyyy-MM-dd"));
+    formData.set("startTime", startTime);
+    formData.set("endTime", endTime);
 
     startTransition(async () => {
-      const result = await addOvertimeEntry(formData);
+      const result = await updateOvertimeEntry(entry.id, formData);
       if (result.success) {
-        toast.success('Overtime entry added successfully');
-        // Reset form
-        formRef.current?.reset();
-        setDate(undefined);
-        setStartTime('');
-        setEndTime('');
-        setOpen(false);
+        toast.success("Overtime entry updated successfully");
+        onOpenChange(false);
       }
     });
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <PlusIcon className="size-4" />
-          Add Entry
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add Overtime Entry</DialogTitle>
+          <DialogTitle>Edit Overtime Entry</DialogTitle>
           <DialogDescription>
-            Enter the date, task, project, start time, and end time
+            Update the date, task, project, start time, and end time
           </DialogDescription>
         </DialogHeader>
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
@@ -93,7 +113,7 @@ export function AddOvertimeDialog() {
                   type="button"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -115,6 +135,7 @@ export function AddOvertimeDialog() {
               id="task"
               name="task"
               placeholder="What task were you working on?"
+              defaultValue={entry.task}
               required
               disabled={isPending}
             />
@@ -128,6 +149,7 @@ export function AddOvertimeDialog() {
               id="project"
               name="project"
               placeholder="What project is this for?"
+              defaultValue={entry.project}
               required
               disabled={isPending}
             />
@@ -174,13 +196,13 @@ export function AddOvertimeDialog() {
               type="button"
               variant="outline"
               className="flex-1"
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
               disabled={isPending}
             >
               Cancel
             </Button>
             <Button type="submit" className="flex-1" disabled={isPending}>
-              {isPending ? 'Adding...' : 'Add Entry'}
+              {isPending ? "Updating..." : "Update Entry"}
             </Button>
           </div>
         </form>

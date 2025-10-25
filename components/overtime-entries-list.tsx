@@ -38,10 +38,11 @@ export async function OvertimeEntriesList() {
           <TableHeader>
             <TableRow>
               <TableHead>Date</TableHead>
+              <TableHead>Task</TableHead>
+              <TableHead>Project</TableHead>
               <TableHead>Start Time</TableHead>
               <TableHead>End Time</TableHead>
               <TableHead>Hours</TableHead>
-              <TableHead>Base Salary</TableHead>
               <TableHead>OT Pay</TableHead>
               <TableHead className="w-[50px]"></TableHead>
             </TableRow>
@@ -50,10 +51,11 @@ export async function OvertimeEntriesList() {
             {entries.map((entry) => (
               <TableRow key={entry.id}>
                 <TableCell>{format(new Date(entry.date), 'EEE, MMM dd')}</TableCell>
-                <TableCell>{entry.startTime}</TableCell>
-                <TableCell>{entry.endTime}</TableCell>
+                <TableCell>{entry.task}</TableCell>
+                <TableCell>{entry.project}</TableCell>
+                <TableCell className="font-mono">{entry.startTime}</TableCell>
+                <TableCell className="font-mono">{entry.endTime}</TableCell>
                 <TableCell>{entry.calculatedHours.toFixed(2)}h</TableCell>
-                <TableCell>${entry.baseSalary.toFixed(2)}</TableCell>
                 <TableCell className="font-semibold">
                   ${entry.overtimePay.toFixed(2)}
                 </TableCell>

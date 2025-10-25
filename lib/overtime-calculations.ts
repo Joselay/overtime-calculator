@@ -5,11 +5,14 @@
 
 /**
  * Calculate duration in hours between start and end time
- * @param startTime - Format: "HH:mm" (e.g., "09:00")
- * @param endTime - Format: "HH:mm" (e.g., "18:00")
- * @returns Duration in hours (e.g., 9.0)
+ * Automatically detects overnight shifts when end time < start time
+ * @param startTime - Format: "HH:mm" (e.g., "18:00")
+ * @param endTime - Format: "HH:mm" (e.g., "02:00")
+ * @returns Duration in hours (e.g., 8.0 for 18:00 to 02:00)
  */
 export function calculateDuration(startTime: string, endTime: string): number {
+  if (!startTime || !endTime) return 0;
+
   const [startHour, startMinute] = startTime.split(':').map(Number);
   const [endHour, endMinute] = endTime.split(':').map(Number);
 
@@ -18,7 +21,7 @@ export function calculateDuration(startTime: string, endTime: string): number {
 
   let durationInMinutes = endInMinutes - startInMinutes;
 
-  // Handle case where end time is past midnight (e.g., 23:00 to 02:00)
+  // Auto-detect overnight: if end time is before start time, add 24 hours
   if (durationInMinutes < 0) {
     durationInMinutes += 24 * 60;
   }

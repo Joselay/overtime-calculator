@@ -4,18 +4,27 @@ import { useState, useTransition, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { TimeInput } from '@/components/ui/time-input';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { addOvertimeEntry } from '@/lib/actions';
+import { calculateDuration } from '@/lib/overtime-calculations';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function OvertimeEntryForm() {
   const [date, setDate] = useState<Date>();
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Calculate duration in real-time (auto-detects overnight)
+  const calculatedHours = startTime && endTime
+    ? calculateDuration(startTime, endTime)
+    : 0;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,8 +34,15 @@ export function OvertimeEntryForm() {
       return;
     }
 
+    if (!startTime || !endTime) {
+      toast.error('Please enter start and end times in 24-hour format (HH:mm)');
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     formData.set('date', format(date, 'yyyy-MM-dd'));
+    formData.set('startTime', startTime);
+    formData.set('endTime', endTime);
 
     startTransition(async () => {
       const result = await addOvertimeEntry(formData);
@@ -35,6 +51,8 @@ export function OvertimeEntryForm() {
         // Reset form
         formRef.current?.reset();
         setDate(undefined);
+        setStartTime('');
+        setEndTime('');
       }
     });
   };
@@ -76,11 +94,12 @@ export function OvertimeEntryForm() {
 
           {/* Start Time */}
           <div className="space-y-2">
-            <Label htmlFor="startTime">Start Time</Label>
-            <Input
-              type="time"
+            <Label htmlFor="startTime">Start Time (24-hour format)</Label>
+            <TimeInput
               id="startTime"
               name="startTime"
+              value={startTime}
+              onChange={setStartTime}
               required
               disabled={isPending}
             />
@@ -88,15 +107,26 @@ export function OvertimeEntryForm() {
 
           {/* End Time */}
           <div className="space-y-2">
-            <Label htmlFor="endTime">End Time</Label>
-            <Input
-              type="time"
+            <Label htmlFor="endTime">End Time (24-hour format)</Label>
+            <TimeInput
               id="endTime"
               name="endTime"
+              value={endTime}
+              onChange={setEndTime}
               required
               disabled={isPending}
             />
           </div>
+
+          {/* Duration Display */}
+          {startTime && endTime && calculatedHours > 0 && (
+            <div className="flex items-center gap-2 rounded-lg border bg-muted px-3 py-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">
+                Total: {calculatedHours.toFixed(1)} hours
+              </span>
+            </div>
+          )}
 
           {/* Base Salary */}
           <div className="space-y-2">
