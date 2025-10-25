@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   IconChevronDown,
   IconChevronLeft,
@@ -9,8 +9,8 @@ import {
   IconChevronsRight,
   IconDotsVertical,
   IconLayoutColumns,
-} from "@tabler/icons-react"
-import { AddOvertimeDialog } from "@/components/add-overtime-dialog"
+} from "@tabler/icons-react";
+import { AddOvertimeDialog } from "@/components/add-overtime-dialog";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -24,11 +24,11 @@ import {
   SortingState,
   useReactTable,
   VisibilityState,
-} from "@tanstack/react-table"
-import { z } from "zod"
+} from "@tanstack/react-table";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -36,15 +36,15 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -52,7 +52,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 export const schema = z.object({
   id: z.number(),
@@ -64,7 +64,7 @@ export const schema = z.object({
   task: z.string(),
   project: z.string(),
   createdAt: z.date().optional(),
-})
+});
 
 const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
@@ -97,7 +97,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => {
-      const date = new Date(row.original.date)
+      const date = new Date(row.original.date);
       return (
         <div className="font-medium">
           {date.toLocaleDateString("en-US", {
@@ -106,7 +106,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
             year: "numeric",
           })}
         </div>
-      )
+      );
     },
     enableHiding: false,
   },
@@ -114,21 +114,17 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "task",
     header: "Task",
     cell: ({ row }) => (
-      <div className="text-muted-foreground">
-        {row.original.task}
-      </div>
+      <div className="text-muted-foreground">{row.original.task}</div>
     ),
-    size: 250,
+    size: 150,
   },
   {
     accessorKey: "project",
     header: "Project",
     cell: ({ row }) => (
-      <div className="text-muted-foreground">
-        {row.original.project}
-      </div>
+      <div className="text-muted-foreground">{row.original.project}</div>
     ),
-    size: 200,
+    size: 300,
   },
   {
     accessorKey: "startTime",
@@ -148,9 +144,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "calculatedHours",
-    header: () => <div className="text-right">Hours</div>,
+    header: "Hours",
     cell: ({ row }) => (
-      <div className="text-right font-medium">
+      <div className="font-medium">
         {row.original.calculatedHours.toFixed(2)} hrs
       </div>
     ),
@@ -158,9 +154,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "overtimePay",
-    header: () => <div className="text-right">Pay</div>,
+    header: "Pay",
     cell: ({ row }) => (
-      <div className="text-right font-medium">
+      <div className="font-medium">
         ${row.original.overtimePay.toFixed(2)}
       </div>
     ),
@@ -168,45 +164,45 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
+    header: () => <div className="text-right"></div>,
     cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex justify-end pl-18">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     ),
+    size: 50,
+    enableHiding: false,
   },
-]
+];
 
-
-export function DataTable({
-  data,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [rowSelection, setRowSelection] = React.useState({})
+export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
+  const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
+  });
 
   const table = useReactTable({
     data,
@@ -231,7 +227,7 @@ export function DataTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -267,7 +263,7 @@ export function DataTable({
                     >
                       {column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -286,7 +282,10 @@ export function DataTable({
                         key={header.id}
                         colSpan={header.colSpan}
                         style={{
-                          width: header.getSize() !== 150 ? header.getSize() : undefined,
+                          width:
+                            header.getSize() !== 150
+                              ? header.getSize()
+                              : undefined,
                         }}
                       >
                         {header.isPlaceholder
@@ -296,7 +295,7 @@ export function DataTable({
                               header.getContext()
                             )}
                       </TableHead>
-                    )
+                    );
                   })}
                 </TableRow>
               ))}
@@ -312,7 +311,10 @@ export function DataTable({
                       <TableCell
                         key={cell.id}
                         style={{
-                          width: cell.column.getSize() !== 150 ? cell.column.getSize() : undefined,
+                          width:
+                            cell.column.getSize() !== 150
+                              ? cell.column.getSize()
+                              : undefined,
                         }}
                       >
                         {flexRender(
@@ -349,7 +351,7 @@ export function DataTable({
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value))
+                  table.setPageSize(Number(value));
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -415,6 +417,5 @@ export function DataTable({
         </div>
       </div>
     </div>
-  )
+  );
 }
-
