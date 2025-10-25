@@ -90,6 +90,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         />
       </div>
     ),
+    size: 50,
     enableSorting: false,
     enableHiding: false,
   },
@@ -108,6 +109,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         </div>
       );
     },
+    size: 120,
     enableHiding: false,
   },
   {
@@ -124,7 +126,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => (
       <div className="text-muted-foreground">{row.original.project}</div>
     ),
-    size: 300,
+    size: 220,
   },
   {
     accessorKey: "startTime",
@@ -156,9 +158,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "overtimePay",
     header: "Pay",
     cell: ({ row }) => (
-      <div className="font-medium">
-        ${row.original.overtimePay.toFixed(2)}
-      </div>
+      <div className="font-medium">${row.original.overtimePay.toFixed(2)}</div>
     ),
     size: 120,
   },
@@ -166,7 +166,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     id: "actions",
     header: () => <div className="text-right"></div>,
     cell: ({ row }) => (
-      <div className="flex justify-end pl-18">
+      <div className="flex justify-end pl-8">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
