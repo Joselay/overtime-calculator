@@ -19,11 +19,12 @@ export async function addOvertimeEntry(formData: FormData) {
   const endTime = formData.get('endTime') as string;
   const task = formData.get('task') as string;
   const project = formData.get('project') as string;
+  const isPublicHoliday = formData.get('isPublicHoliday') === 'true';
 
   // Calculate duration and overtime pay using user's base salary
   // Automatically detects overnight shifts (e.g., 18:00 to 02:00 = 8 hours)
   const calculatedHours = calculateDuration(startTime, endTime);
-  const overtimePay = calculateOvertimePay(currentUser.baseSalary, calculatedHours);
+  const overtimePay = calculateOvertimePay(currentUser.baseSalary, calculatedHours, date, startTime, endTime, isPublicHoliday);
 
   // Insert into database
   await db.insert(overtimeEntries).values({
@@ -34,6 +35,7 @@ export async function addOvertimeEntry(formData: FormData) {
     overtimePay,
     task,
     project,
+    isPublicHoliday,
   });
 
   revalidatePath('/');
@@ -61,11 +63,12 @@ export async function updateOvertimeEntry(id: number, formData: FormData) {
   const endTime = formData.get('endTime') as string;
   const task = formData.get('task') as string;
   const project = formData.get('project') as string;
+  const isPublicHoliday = formData.get('isPublicHoliday') === 'true';
 
   // Calculate duration and overtime pay using user's base salary
   // Automatically detects overnight shifts (e.g., 18:00 to 02:00 = 8 hours)
   const calculatedHours = calculateDuration(startTime, endTime);
-  const overtimePay = calculateOvertimePay(currentUser.baseSalary, calculatedHours);
+  const overtimePay = calculateOvertimePay(currentUser.baseSalary, calculatedHours, date, startTime, endTime, isPublicHoliday);
 
   // Update in database
   await db
@@ -78,6 +81,7 @@ export async function updateOvertimeEntry(id: number, formData: FormData) {
       overtimePay,
       task,
       project,
+      isPublicHoliday,
     })
     .where(eq(overtimeEntries.id, id));
 

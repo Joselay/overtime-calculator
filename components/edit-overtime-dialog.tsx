@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { TimeInput } from "@/components/ui/time-input";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
@@ -34,6 +35,7 @@ interface EditOvertimeDialogProps {
     overtimePay: number;
     task: string;
     project: string;
+    isPublicHoliday: boolean;
     createdAt?: Date;
   };
   open: boolean;
@@ -48,6 +50,7 @@ export function EditOvertimeDialog({
   const [date, setDate] = useState<Date>();
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [isPublicHoliday, setIsPublicHoliday] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -62,6 +65,7 @@ export function EditOvertimeDialog({
       setDate(parse(entry.date, "yyyy-MM-dd", new Date()));
       setStartTime(entry.startTime);
       setEndTime(entry.endTime);
+      setIsPublicHoliday(entry.isPublicHoliday || false);
     }
   }, [open, entry]);
 
@@ -82,6 +86,7 @@ export function EditOvertimeDialog({
     formData.set("date", format(date, "yyyy-MM-dd"));
     formData.set("startTime", startTime);
     formData.set("endTime", endTime);
+    formData.set("isPublicHoliday", String(isPublicHoliday));
 
     startTransition(async () => {
       const result = await updateOvertimeEntry(entry.id, formData);
@@ -153,6 +158,22 @@ export function EditOvertimeDialog({
               required
               disabled={isPending}
             />
+          </div>
+
+          {/* Public Holiday Checkbox */}
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isPublicHoliday"
+              checked={isPublicHoliday}
+              onCheckedChange={(checked) => setIsPublicHoliday(checked === true)}
+              disabled={isPending}
+            />
+            <Label
+              htmlFor="isPublicHoliday"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+            >
+              Public Holiday (200% rate)
+            </Label>
           </div>
 
           {/* Start Time */}

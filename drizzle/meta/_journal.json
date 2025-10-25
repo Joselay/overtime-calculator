@@ -43,6 +43,13 @@
       "when": 1761356591189,
       "tag": "0005_lonely_venus",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1761383430009,
+      "tag": "0006_worthless_starfox",
+      "breakpoints": true
     }
   ]
 }
