@@ -22,6 +22,27 @@
       "when": 1761324404998,
       "tag": "0002_stiff_hellfire_club",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1761356242031,
+      "tag": "0003_gifted_freak",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1761356378711,
+      "tag": "0004_jazzy_dark_phoenix",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1761356591189,
+      "tag": "0005_lonely_venus",
+      "breakpoints": true
     }
   ]
 }

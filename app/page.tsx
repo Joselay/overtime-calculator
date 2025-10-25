@@ -1,5 +1,4 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 import { SiteHeader } from "@/components/site-header"
@@ -8,14 +7,13 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import { getCurrentUser } from "@/lib/auth"
-import { getOvertimeStats, getOvertimeChartData } from "@/lib/db/queries"
-
-import data from "./data.json"
+import { getOvertimeStats } from "@/lib/db/queries"
+import { getOvertimeEntries } from "@/lib/actions"
 
 export default async function Page() {
   const currentUser = await getCurrentUser()
   const overtimeStats = await getOvertimeStats()
-  const chartData = await getOvertimeChartData()
+  const overtimeEntries = await getOvertimeEntries()
 
   // Transform user data to match AppSidebar expectations
   const user = currentUser
@@ -42,10 +40,7 @@ export default async function Page() {
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <SectionCards stats={overtimeStats} />
-              <div className="px-4 lg:px-6">
-                <ChartAreaInteractive data={chartData} />
-              </div>
-              <DataTable data={data} />
+              <DataTable data={overtimeEntries} />
             </div>
           </div>
         </div>
