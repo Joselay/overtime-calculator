@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { TimeInput } from '@/components/ui/time-input';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Dialog,
@@ -27,7 +26,6 @@ export function AddOvertimeDialog() {
   const [date, setDate] = useState<Date>();
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [isPublicHoliday, setIsPublicHoliday] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -53,7 +51,6 @@ export function AddOvertimeDialog() {
     formData.set('date', format(date, 'yyyy-MM-dd'));
     formData.set('startTime', startTime);
     formData.set('endTime', endTime);
-    formData.set('isPublicHoliday', String(isPublicHoliday));
 
     startTransition(async () => {
       const result = await addOvertimeEntry(formData);
@@ -64,7 +61,6 @@ export function AddOvertimeDialog() {
         setDate(undefined);
         setStartTime('');
         setEndTime('');
-        setIsPublicHoliday(false);
         setOpen(false);
       }
     });
@@ -135,22 +131,6 @@ export function AddOvertimeDialog() {
               required
               disabled={isPending}
             />
-          </div>
-
-          {/* Public Holiday Checkbox */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="isPublicHoliday"
-              checked={isPublicHoliday}
-              onCheckedChange={(checked) => setIsPublicHoliday(checked === true)}
-              disabled={isPending}
-            />
-            <Label
-              htmlFor="isPublicHoliday"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-            >
-              Public Holiday (200% rate)
-            </Label>
           </div>
 
           {/* Start Time */}

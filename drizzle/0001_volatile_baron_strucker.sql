@@ -1,0 +1,1 @@
+ALTER TABLE "overtime_entries" DROP COLUMN "is_public_holiday";

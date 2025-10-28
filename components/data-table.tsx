@@ -67,7 +67,6 @@ export const schema = z.object({
   overtimePay: z.number(),
   task: z.string(),
   project: z.string(),
-  isPublicHoliday: z.boolean(),
   createdAt: z.date().optional(),
 });
 

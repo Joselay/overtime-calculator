@@ -1,4 +1,4 @@
-import { pgTable, serial, text, real, timestamp, date, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, real, timestamp, date } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -19,7 +19,6 @@ export const overtimeEntries = pgTable('overtime_entries', {
   overtimePay: real('overtime_pay').notNull(),
   task: text('task').notNull(),
   project: text('project').notNull(),
-  isPublicHoliday: boolean('is_public_holiday').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

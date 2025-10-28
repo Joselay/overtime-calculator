@@ -8,6 +8,13 @@
       "when": 1761385438917,
       "tag": "0000_first_wild_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1761660185145,
+      "tag": "0001_volatile_baron_strucker",
+      "breakpoints": true
     }
   ]
 }
