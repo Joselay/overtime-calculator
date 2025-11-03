@@ -16,19 +16,21 @@ interface SectionCardsProps {
     totalHours: number
     totalEntries: number
     averageOvertimePay: number
+    currentMonthTotalPay: number
+    currentMonthTotalHours: number
     previousMonthTotalPay: number
     previousMonthTotalHours: number
   }
 }
 
 export function SectionCards({ stats }: SectionCardsProps) {
-  // Calculate percentage changes
+  // Calculate percentage changes (current month vs previous month)
   const payChangePercent = stats.previousMonthTotalPay > 0
-    ? ((stats.totalOvertimePay - stats.previousMonthTotalPay) / stats.previousMonthTotalPay * 100)
+    ? ((stats.currentMonthTotalPay - stats.previousMonthTotalPay) / stats.previousMonthTotalPay * 100)
     : 0
 
   const hoursChangePercent = stats.previousMonthTotalHours > 0
-    ? ((stats.totalHours - stats.previousMonthTotalHours) / stats.previousMonthTotalHours * 100)
+    ? ((stats.currentMonthTotalHours - stats.previousMonthTotalHours) / stats.previousMonthTotalHours * 100)
     : 0
 
   const formatCurrency = (value: number) => {
@@ -68,7 +70,7 @@ export function SectionCards({ stats }: SectionCardsProps) {
             {payChangePercent >= 0 ? <IconTrendingUp className="size-4" /> : <IconTrendingDown className="size-4" />}
           </div>
           <div className="text-muted-foreground">
-            This month's overtime earnings
+            Total overtime earnings (all-time)
           </div>
         </CardFooter>
       </Card>
@@ -91,7 +93,7 @@ export function SectionCards({ stats }: SectionCardsProps) {
             {hoursChangePercent >= 0 ? <IconTrendingUp className="size-4" /> : <IconTrendingDown className="size-4" />}
           </div>
           <div className="text-muted-foreground">
-            Total hours worked overtime
+            Total hours worked overtime (all-time)
           </div>
         </CardFooter>
       </Card>
@@ -110,9 +112,9 @@ export function SectionCards({ stats }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Total overtime sessions
+            Total overtime sessions (all-time)
           </div>
-          <div className="text-muted-foreground">Number of overtime entries</div>
+          <div className="text-muted-foreground">Number of all overtime entries</div>
         </CardFooter>
       </Card>
       <Card className="@container/card">
@@ -130,9 +132,9 @@ export function SectionCards({ stats }: SectionCardsProps) {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Mean overtime compensation
+            Mean overtime compensation (all-time)
           </div>
-          <div className="text-muted-foreground">Per overtime session</div>
+          <div className="text-muted-foreground">Average per overtime session</div>
         </CardFooter>
       </Card>
     </div>

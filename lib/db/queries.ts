@@ -7,11 +7,23 @@ export interface OvertimeStats {
   totalHours: number;
   totalEntries: number;
   averageOvertimePay: number;
+  currentMonthTotalPay: number;
+  currentMonthTotalHours: number;
   previousMonthTotalPay: number;
   previousMonthTotalHours: number;
 }
 
 export async function getOvertimeStats(): Promise<OvertimeStats> {
+  // Get ALL-TIME totals (no date filter)
+  const [allTimeData] = await db
+    .select({
+      totalOvertimePay: sql<number>`COALESCE(SUM(${overtimeEntries.overtimePay}), 0)`,
+      totalHours: sql<number>`COALESCE(SUM(${overtimeEntries.calculatedHours}), 0)`,
+      totalEntries: sql<number>`COALESCE(COUNT(*), 0)`,
+      averageOvertimePay: sql<number>`COALESCE(AVG(${overtimeEntries.overtimePay}), 0)`,
+    })
+    .from(overtimeEntries);
+
   // Get current month stats
   const currentMonthStart = new Date();
   currentMonthStart.setDate(1);
@@ -22,6 +34,17 @@ export async function getOvertimeStats(): Promise<OvertimeStats> {
   currentMonthEnd.setDate(0);
   currentMonthEnd.setHours(23, 59, 59, 999);
 
+  const [currentMonthData] = await db
+    .select({
+      totalOvertimePay: sql<number>`COALESCE(SUM(${overtimeEntries.overtimePay}), 0)`,
+      totalHours: sql<number>`COALESCE(SUM(${overtimeEntries.calculatedHours}), 0)`,
+    })
+    .from(overtimeEntries)
+    .where(
+      sql`${overtimeEntries.date} >= ${currentMonthStart.toISOString().split('T')[0]}
+          AND ${overtimeEntries.date} <= ${currentMonthEnd.toISOString().split('T')[0]}`
+    );
+
   // Get previous month stats
   const previousMonthStart = new Date();
   previousMonthStart.setMonth(previousMonthStart.getMonth() - 1);
@@ -31,19 +54,6 @@ export async function getOvertimeStats(): Promise<OvertimeStats> {
   const previousMonthEnd = new Date();
   previousMonthEnd.setDate(0);
   previousMonthEnd.setHours(23, 59, 59, 999);
-
-  const [currentMonthData] = await db
-    .select({
-      totalOvertimePay: sql<number>`COALESCE(SUM(${overtimeEntries.overtimePay}), 0)`,
-      totalHours: sql<number>`COALESCE(SUM(${overtimeEntries.calculatedHours}), 0)`,
-      totalEntries: sql<number>`COALESCE(COUNT(*), 0)`,
-      averageOvertimePay: sql<number>`COALESCE(AVG(${overtimeEntries.overtimePay}), 0)`,
-    })
-    .from(overtimeEntries)
-    .where(
-      sql`${overtimeEntries.date} >= ${currentMonthStart.toISOString().split('T')[0]}
-          AND ${overtimeEntries.date} <= ${currentMonthEnd.toISOString().split('T')[0]}`
-    );
 
   const [previousMonthData] = await db
     .select({
@@ -57,10 +67,12 @@ export async function getOvertimeStats(): Promise<OvertimeStats> {
     );
 
   return {
-    totalOvertimePay: Number(currentMonthData?.totalOvertimePay) || 0,
-    totalHours: Number(currentMonthData?.totalHours) || 0,
-    totalEntries: Number(currentMonthData?.totalEntries) || 0,
-    averageOvertimePay: Number(currentMonthData?.averageOvertimePay) || 0,
+    totalOvertimePay: Number(allTimeData?.totalOvertimePay) || 0,
+    totalHours: Number(allTimeData?.totalHours) || 0,
+    totalEntries: Number(allTimeData?.totalEntries) || 0,
+    averageOvertimePay: Number(allTimeData?.averageOvertimePay) || 0,
+    currentMonthTotalPay: Number(currentMonthData?.totalOvertimePay) || 0,
+    currentMonthTotalHours: Number(currentMonthData?.totalHours) || 0,
     previousMonthTotalPay: Number(previousMonthData?.totalOvertimePay) || 0,
     previousMonthTotalHours: Number(previousMonthData?.totalHours) || 0,
   };
